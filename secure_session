@@ -1,0 +1,107 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(dirname "$(readlink -f $0)")"
+
+if [ ! -f "${HOME}/.secure_sessionrc" ]; then
+    SECURE_BASE_DIR="$(dirname ${SCRIPT_DIR})"
+    TMPFS_MOUNT_POINT="${HOME}/tmp_data"
+    PROFILES_TO_MANAGE=(.mozilla)
+else
+    source ${HOME}/.secure_sessionrc
+fi
+
+function usage {
+    cat << EOF
+Usage: $(basename $0)
+
+OPTIONS:
+    -h show this help message
+    -c create a new secure session
+    -i add a ssh identity to your ssh-agent
+    -s sync the secure session back to secure storage
+    -k kill the current secure session - This will shred (man shred) all files
+       copied from session creation
+
+.secure_sessionrc OPTIONS:
+    SECURE_BASE_DIR="/path/to/secure/dir"
+    TMPFS_MOUNT_POINT="/path/to/trashable/dir"
+    PROFILES_TO_MANAGE=(.mozilla .other_secure_profile)
+EOF
+
+}
+
+function cp_profiles {
+    for profile in "${PROFILES_TO_MANAGE[@]}"; do
+        rsync -Priat ${SECURE_BASE_DIR}/${profile} ${TMPFS_MOUNT_POINT}
+    done
+    touch ${TMPFS_MOUNT_POINT}/.active_secure_session
+}
+
+function sync_profiles {
+    if [ -f "${TMPFS_MOUNT_POINT}/.active_secure_session" ]; then
+        for profile in "${PROFILES_TO_MANAGE[@]}"; do
+            rsync -Priat ${TMPFS_MOUNT_POINT}/${profile} ${SECURE_BASE_DIR}
+        done
+    else
+        echo "ERROR: No active session to sync"
+    fi
+}
+
+function rm_profiles {
+    if [ -f "${TMPFS_MOUNT_POINT}/.active_secure_session" ]; then
+        find ${TMPFS_MOUNT_POINT} -type f | xargs shred -z -n 8 --remove
+        rm -rf ${TMPFS_MOUNT_POINT}/*
+        rm -rf ${TMPFS_MOUNT_POINT}/.mozilla ${TMPFS_MOUNT_POINT}/.active_secure_session
+    fi
+}
+
+while getopts "hci:ks" OPTION
+do
+    case ${OPTION} in
+        h)
+            usage
+            exit 1
+            ;;
+        c)
+            CREATE_SESSION=1
+            ;;
+        i)
+            SSH_IDENTITY=${OPTARG}
+            ;;
+        k)
+            if [ -z ${CREATE_SESSION} ]; then
+                KILL_SESSION=1
+            fi
+            ;;
+        s)
+            if [ -z ${CREATE_SESSION} ]; then
+                SYNC_SESSION=1
+            fi
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
+done
+
+if [ ! -z ${CREATE_SESSION} ]; then
+    echo "Creating session..."
+    cp_profiles
+    if [ ! -z ${SSH_IDENTITY} ]; then
+        echo "Adding ssh identity to agent"
+        ssh-add -t 21600 ${SSH_IDENTITY}
+    fi
+    exit
+fi
+
+if [ ! -z ${SYNC_SESSION} ]; then
+    echo "Syncing session..."
+    sync_profiles
+fi
+
+if [ ! -z ${KILL_SESSION} ]; then
+    echo "Destroying session..."
+    rm_profiles
+    ssh-add -D
+fi
