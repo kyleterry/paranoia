@@ -2,12 +2,12 @@
 
 SCRIPT_DIR="$(dirname "$(readlink -f $0)")"
 
-if [ ! -f "${HOME}/.secure_sessionrc" ]; then
+if [ ! -f "${HOME}/.paranoiarc" ]; then
     SECURE_BASE_DIR="$(dirname ${SCRIPT_DIR})"
     TMPFS_MOUNT_POINT="${HOME}/tmp_data"
     PROFILES_TO_MANAGE=(.mozilla)
 else
-    source ${HOME}/.secure_sessionrc
+    source ${HOME}/.paranoiarc
 fi
 
 function usage {
@@ -22,7 +22,7 @@ OPTIONS:
     -k kill the current secure session - This will shred (man shred) all files
        copied from session creation
 
-.secure_sessionrc OPTIONS:
+.paranoiarc OPTIONS:
     SECURE_BASE_DIR="/path/to/secure/dir"
     TMPFS_MOUNT_POINT="/path/to/trashable/dir"
     PROFILES_TO_MANAGE=(.mozilla .other_secure_profile)
