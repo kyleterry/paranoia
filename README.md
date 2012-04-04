@@ -11,12 +11,12 @@ encrypted thumbdrive to store the profiles on.
 
 `sudo make install`
 
-```
-touch ${HOME}/.paranoiarc
-echo SECURE_BASE_DIR="/path/to/secure/dir" >> ~/.paranoiarc
-echo TMPFS_MOUNT_POINT="/path/to/trashable/dir" >> ~/.paranoiarc
-echo PROFILES_TO_MANAGE=(.mozilla .other_secure_profile) >> ~/.paranoiarc
-```
+    ```
+    touch ${HOME}/.paranoiarc
+    echo SECURE_BASE_DIR="/path/to/secure/dir" >> ~/.paranoiarc
+    echo TMPFS_MOUNT_POINT="/path/to/trashable/dir" >> ~/.paranoiarc
+    echo PROFILES_TO_MANAGE=(.mozilla .other_secure_profile) >> ~/.paranoiarc
+    ```
 
 ## Use it ##
 
