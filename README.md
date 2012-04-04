@@ -7,15 +7,14 @@ You need to create a temporary trashable directory. The best is a small tmpfs
 mount in your home directory. You will also need a secure device like an 
 encrypted thumbdrive to store the profiles on.
 
-`cd /path/to/paranoia`
-
-`sudo make install`
-
     ```
+    cd /path/to/paranoia
+    sudo make install
     touch ${HOME}/.paranoiarc
     echo SECURE_BASE_DIR="/path/to/secure/dir" >> ~/.paranoiarc
     echo TMPFS_MOUNT_POINT="/path/to/trashable/dir" >> ~/.paranoiarc
     echo PROFILES_TO_MANAGE=(.mozilla .other_secure_profile) >> ~/.paranoiarc
+    
     ```
 
 ## Use it ##
