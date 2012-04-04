@@ -31,4 +31,4 @@ cat@cats ~ $ `paranoia -s`
 Then, at the end of the day, you will want to kill your session and erase it 
 from the tmpfs:
 
-cat@cats ~ `paranoia -k -s` - the `-s` is so you can sync it back to your secure location.
+cat@cats ~ $ `paranoia -k -s` - the `-s` is so you can sync it back to your secure location.
