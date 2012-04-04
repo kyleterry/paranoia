@@ -3,6 +3,9 @@
 SCRIPT_DIR="$(dirname "$(readlink -f $0)")"
 
 if [ ! -f "${HOME}/.paranoiarc" ]; then
+    echo "ERROR: missing ~/.paranoiarc file"
+    usage
+    exit 1
     SECURE_BASE_DIR="$(dirname ${SCRIPT_DIR})"
     TMPFS_MOUNT_POINT="${HOME}/tmp_data"
     PROFILES_TO_MANAGE=(.mozilla)
@@ -31,6 +34,10 @@ EOF
 }
 
 function cp_profiles {
+    if [ -f "${TMPFS_MOUNT_POINT}/.active_secure_session" ]; then
+        echo "Warning: there is already an active session. Sync with -s."
+        exit
+    fi
     for profile in "${PROFILES_TO_MANAGE[@]}"; do
         rsync -Priat ${SECURE_BASE_DIR}/${profile} ${TMPFS_MOUNT_POINT}
     done
