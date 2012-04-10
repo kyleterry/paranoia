@@ -1,5 +1,17 @@
 ## The gist of it ##
-Paranoia is a way to keep your application profiles more secure.
+Paranoia is a way to keep your application profiles more secure by helping
+you sync them between a tmpfs and encrypted medium.
+
+If you are paranoid like me, you don't want your firefox .mozilla directory 
+accessible by anyone who can gain physical access to your computer.
+
+I use a tmpfs directory so I can pull my encrypted thumbdrive and go to lunch 
+while my browser crunches away at something. At the end of the day, I sync the 
+profile from the tmpfs to my encrypted thumbdrive. It then kills (shreds) the 
+entire tmpfs directory and firefox is no longer workable.
+
+It's not limited to .mozilla profiles. It can be used for anything that stores 
+data in, say, your home directory.
 
 ## Installation ##
 
