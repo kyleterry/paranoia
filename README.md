@@ -24,6 +24,12 @@ If you want to include adding a ssh identity to your ssh agent:
 
 cat@cats ~ $ `paranoia -c -i /path/to/id_rsa`
 
+If you just want to create an SSH session for your key:
+
+cat@cats ~ $ `paranoia -i /path/to/id_rsa`
+
+NOTE: The above just uses ssh-add and an expiration of 21600 seconds.
+
 Every once in a while you will want to sync your session (or not):
 
 cat@cats ~ $ `paranoia -s`
