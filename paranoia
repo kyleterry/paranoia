@@ -102,6 +102,11 @@ if [ ! -z ${CREATE_SESSION} ]; then
     exit
 fi
 
+if [ ! -z ${SSH_IDENTITY} ]; then
+    echo "Adding ssh identity to agent"
+    ssh-add -t 21600 ${SSH_IDENTITY}
+fi
+
 if [ ! -z ${SYNC_SESSION} ]; then
     echo "Syncing session..."
     sync_profiles
