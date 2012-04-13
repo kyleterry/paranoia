@@ -62,8 +62,10 @@ function rm_profiles {
     fi
 }
 
+OPTIONS_EXIST=0
 while getopts "hci:ks" OPTION
 do
+    OPTIONS_EXIST=1
     case ${OPTION} in
         h)
             usage
@@ -85,12 +87,16 @@ do
                 SYNC_SESSION=1
             fi
             ;;
-        ?)
+        *)
             usage
             exit
             ;;
     esac
 done
+if [ ${OPTIONS_EXIST} -eq "0" ]; then
+    usage
+    exit 1
+fi
 
 if [ ! -z ${CREATE_SESSION} ]; then
     echo "Creating session..."
